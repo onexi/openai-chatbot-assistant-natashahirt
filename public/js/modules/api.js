@@ -1,7 +1,7 @@
 // api.js
 
 import { state } from './state.js';
-import { writeToMessages, airplaneIconHTML } from './ui.js';
+import { writeToMessages, displayLastMessage, airplaneIconHTML } from './ui.js';
 
 export async function getAssistant() {
     let name = document.getElementById('assistant_name').value;
@@ -62,7 +62,9 @@ export async function getResponse() {
     spinner.style.display = "inline-block"; // Show spinner
     buttonText.innerHTML = ""; // Update button text to the spinner
     console.log("Send button disabled");
-    writeToMessages(message, 'user');
+
+    state.messages.push({ role: "user", content: message });
+    displayLastMessage(state);
   
     try {
       const response = await fetch('/api/run', {
@@ -78,9 +80,26 @@ export async function getResponse() {
       });
   
       const data = await response.json();
-      console.log(data); // DEBUG Log the response data structure
-      const assistantResponse = data.messages[1]?.content[0]?.text?.value || "No response available";
-      writeToMessages(assistantResponse, 'assistant'); // Display the assistant's response
+      console.log("Messages in response:", data.messages); // Log to check structure
+
+      // Retrieve the assistant's message with flexible structure access
+      const lastAssistantMessage = data.messages[data.messages.length - 1]; // Get the last message
+      let assistantResponse = "No response available";
+
+      if (lastAssistantMessage && lastAssistantMessage.content) {
+        if (typeof lastAssistantMessage.content === "string") {
+          console.log("It's a string")
+          assistantResponse = lastAssistantMessage.content; // Direct string content
+        } else if (Array.isArray(lastAssistantMessage.content)) {
+          console.log("It's not a string it's an array")
+          console.log(lastAssistantMessage.content[0]?.text?.value)
+          assistantResponse = lastAssistantMessage.content[0]?.text?.value || assistantResponse;
+        }
+      }
+      
+      // Add assistant response to state and display it
+      state.messages.push({ role: "assistant", content: assistantResponse });
+      displayLastMessage(state);
   
     } catch (error) {
       console.error('Error sending message:', error);
