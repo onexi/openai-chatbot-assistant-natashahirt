@@ -1,5 +1,8 @@
 // ui.js
 
+import { getAssistant, getThread, getResponse } from './api.js'; // Adjust the path as necessary
+import { state } from './state.js'; // Import the state object
+
 // icon html for send button
 export const airplaneIconHTML = '<i class="fas fa-paper-plane"></i>';
 
@@ -50,8 +53,13 @@ export function displayLastMessage(state) {
   }
 }
 
+function clearMessages() {
+  const messageContainer = document.getElementById("message-container");
+  messageContainer.innerHTML = ""; // Clear all existing messages
+}
+
 // Toggle between showing the text and input field
-export function toggleAssistantInput() {
+export async function toggleAssistantInput() {
     const assistantDisplay = document.getElementById("assistantDisplay");
     const assistantInput = document.getElementById("assistant_name");
     const getAssistantBtn = document.getElementById("get_assistant");
@@ -65,10 +73,26 @@ export function toggleAssistantInput() {
       getAssistantBtn.textContent = "Save";
     } else {
       // Save the assistant ID and switch to display mode
-      assistantDisplay.textContent = assistantInput.value;
-      assistantDisplay.style.display = "inline";
-      assistantInput.style.display = "none";
-      getAssistantBtn.textContent = "Change Assistant";
+      
+      try {
+        // Clear messages and create a new thread
+        clearMessages();
+        await getThread();
+
+        state.assistant_id = assistantInput.value; 
+        // Fetch the new assistant's data
+        await getAssistant(); // Fetch the assistant based on the updated input
+
+        // Set the display text to the selected assistant name
+        assistantDisplay.textContent = assistantInput.value; // Set to the selected assistant's name
+        assistantDisplay.style.display = "inline";
+        assistantInput.style.display = "none";
+        getAssistantBtn.textContent = "Change Assistant";
+
+      } catch (error) {
+          console.error("Error toggling assistant input:", error);
+      }
+
     }
 }
 

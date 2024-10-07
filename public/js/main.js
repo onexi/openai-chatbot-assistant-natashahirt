@@ -4,6 +4,9 @@
 import { getAssistant, getThread, getResponse } from './modules/api.js';
 import { airplaneIconHTML, initializeUI } from './modules/ui.js'; 
 
+// Assign getThread to the global scope so HTML can access it
+window.getThread = getThread;
+
 // Initialize the application
 document.addEventListener("DOMContentLoaded", async () => {
   const buttonText = document.getElementById("buttonText");
