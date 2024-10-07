@@ -3,6 +3,21 @@
 // icon html for send button
 export const airplaneIconHTML = '<i class="fas fa-paper-plane"></i>';
 
+// format messages for display
+export function formatMessageContent(content) {
+  // Replace "**text**" with "<strong>text</strong>" for bold text
+  content = content.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  
+  // Add line breaks after numbered items and other markers like hyphens or colons
+  content = content.replace(/(\d\.) /g, "<br><strong>$1</strong> "); // Numbered items
+  content = content.replace(/- /g, "&nbsp;&nbsp;&bull; "); // Bulleted items with indentation
+
+  // Additional line breaks between sections
+  content = content.replace(/\n/g, "<br>");
+  
+  return content;
+}
+
 // write to messages
 export function writeToMessages(message, role = 'assistant') {
     const messageContainer = document.getElementById("message-container");
@@ -10,7 +25,7 @@ export function writeToMessages(message, role = 'assistant') {
 
     // append styling based on the role
     messageElement.classList.add("message", role); // Add "user" or "assistant" class based on role
-    messageElement.textContent = message;
+    messageElement.innerHTML = message;
 
     // append message element to message container
     messageContainer.appendChild(messageElement);
@@ -22,7 +37,8 @@ export function displayLastMessage(state) {
   const lastMessage = state.messages[state.messages.length - 1]; // Get the last message
 
   if (lastMessage.role === "assistant") {
-      writeToMessages(lastMessage.content, "assistant"); // Display the assistant's response
+      const formattedContent = formatMessageContent(lastMessage.content);
+      writeToMessages(formattedContent, "assistant"); // Display the assistant's response
   } else if (lastMessage.role === "user") {
       writeToMessages(lastMessage.content, "user"); // Display the user's message
   }
@@ -56,3 +72,4 @@ export function initializeUI() {
         getAssistantBtn.onclick = toggleAssistantInput;
     }
 }
+
