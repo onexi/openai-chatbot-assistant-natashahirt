@@ -3,18 +3,24 @@
 // icon html for send button
 export const airplaneIconHTML = '<i class="fas fa-paper-plane"></i>';
 
-// format messages for display
 export function formatMessageContent(content) {
+  // Remove "Source: [" and trim any extra whitespace
+  content = content.replace(/Source:\s*\[/g, ""); 
+
   // Replace "**text**" with "<strong>text</strong>" for bold text
   content = content.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   
-  // Add line breaks after numbered items and other markers like hyphens or colons
-  content = content.replace(/(\d\.) /g, "<br><strong>$1</strong> "); // Numbered items
-  content = content.replace(/- /g, "&nbsp;&nbsp;&bull; "); // Bulleted items with indentation
-
-  // Additional line breaks between sections
+  // Add line breaks for numbered and bullet points
+  content = content.replace(/(\d+\.) /g, "<br><strong>$1</strong> ");
+  content = content.replace(/- /g, "&nbsp;&nbsp;&bull; ");
   content = content.replace(/\n/g, "<br>");
   
+  // Detect source markers like "8:3†bankingProducts.json" and format them
+  content = content.replace(/(\d+:\d+)†(.*?)\]/g, (match, p1, p2) => {
+  const [page, section] = p1.split(':');
+  return `<span class="citation">(Source: ${p2}, page ${page}, section ${section})</span>`;
+  });
+
   return content;
 }
 

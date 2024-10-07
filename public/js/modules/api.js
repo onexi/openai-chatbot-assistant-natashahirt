@@ -88,15 +88,13 @@ export async function getResponse() {
 
       if (lastAssistantMessage && lastAssistantMessage.content) {
         if (typeof lastAssistantMessage.content === "string") {
-          console.log("It's a string")
           assistantResponse = lastAssistantMessage.content; // Direct string content
         } else if (Array.isArray(lastAssistantMessage.content)) {
-          console.log("It's not a string it's an array")
           console.log(lastAssistantMessage.content[0]?.text?.value)
           assistantResponse = lastAssistantMessage.content[0]?.text?.value || assistantResponse;
         }
       }
-      
+
       // Add assistant response to state and display it
       state.messages.push({ role: "assistant", content: assistantResponse });
       displayLastMessage(state);
