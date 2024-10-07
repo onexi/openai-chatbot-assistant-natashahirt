@@ -1,3 +1,5 @@
+/* styles.css */
+
 /* Body Background */
 body {
   background-color: #f8f9fa;
@@ -30,64 +32,71 @@ body {
   gap: 8px;
 }
 
-/* Message Styles */
+/* General message styling */
 .message {
+  display: inline-block;
   padding: 10px 15px;
-  border-radius: 20px;
+  margin: 8px 0;
+  border-radius: 15px;
   max-width: 60%;
   word-wrap: break-word;
+  font-size: 1em;
+}
+
+/* Assistant message styling */
+.message.assistant {
+  background-color: #d1d1f2; /* Light purple background */
+  color: #4c4ca6; /* Dark text for contrast */
   position: relative;
+  align-self: flex-start;
 }
 
+/* User message styling */
 .message.user {
-  background-color: #d1e7dd;
+  background-color: #d1e7dd; /* Light green background */
   color: #155724;
-  align-self: flex-end;
-  border-top-right-radius: 0;
   margin-left: auto;
+  position: relative;
+  align-self: flex-end;
 }
 
+/* System message styling */
 .message.system {
   color: #6c757d; /* Grey text color */
   font-style: italic;
   margin: 3px 0; /* Smaller spacing between system messages */
-  padding: 2px 5px; /* Minimal padding to keep it inline */
+  padding: 2px 5px; /* Minimal padding for inline look */
   text-align: left;
-  font-size: 0.9em; /* Slightly smaller font size for system messages */
+  font-size: 0.9em; /* Slightly smaller font size */
+  background-color: transparent; /* No background for system messages */
+  border-radius: 0;
+  max-width: 100%; /* Full width for readability */
 }
 
-/* System Message Styles (no bubbles, grey text) */
-.message.system {
-  color: #6c757d; /* Grey text color */
-  font-style: italic;
-  margin: 5px 0;
-  text-align: left;
-}
-
-/* Add a pointer triangle for Assistant */
-.message.assistant::after {
+/* Pointer triangle for assistant messages */
+.message.assistant::before {
   content: "";
   position: absolute;
-  top: 0;
+  top: 10px;
   left: -10px;
   width: 0;
   height: 0;
-  border-right: 10px solid #d1d1f2;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
+  border-style: solid;
+  border-width: 10px 15px 10px 0;
+  border-color: transparent #d1d1f2 transparent transparent;
 }
 
-/* Add a pointer triangle for User */
-.message.user::after {
+/* Pointer triangle for user messages */
+.message.user::before {
   content: "";
   position: absolute;
-  top: 0;
+  top: 10px;
   right: -10px;
   width: 0;
   height: 0;
-  border-left: 10px solid #d1e7dd;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
+  border-style: solid;
+  border-width: 10px 0 10px 15px;
+  border-color: transparent transparent transparent #d1e7dd;
 }
 
 /* Button Styles */
@@ -130,11 +139,15 @@ button {
 #assistant_name {
   border-color: #d1e7dd;
   display: none;
+  max-width: 400px; /* Increase width */
+  border: 1px solid #ced4da;
+  border-radius: 8px; /* Rounded corners for a more prominent look */
 }
 
-#assistantDisplay {
+#assistantDisplay, #assistant_name {
   color: #6c757d; /* Grey text color */
   font-style: italic;
+  font-size: 0.9em; /* Slightly smaller font size */
   margin: 5px 0;
   text-align: left;
 }

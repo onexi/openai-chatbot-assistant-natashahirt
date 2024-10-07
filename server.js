@@ -1,3 +1,5 @@
+// server.js
+
 // Load environment variables
 import dotenv from 'dotenv';
 dotenv.config();
@@ -23,6 +25,7 @@ let state = {
   threadId: null,
   messages: [],
 };
+
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
