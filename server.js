@@ -49,63 +49,64 @@ app.post('/api/assistants', async (req, res) => {
   });
   
 
-// Route to create a new Thread
-app.post('/api/threads', async (req, res) => {
-  const { assistantId } = req.body;
-  try {
-    let response = await openai.beta.threads.create()
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Error creating thread:', errorText);
-      return res.status(response.status).json({ error: 'Failed to create thread' });
+  app.post('/api/threads', async (req, res) => {
+    const { assistantId } = req.body;
+    try {
+      // Call OpenAI API to create a thread
+      const response = await openai.beta.threads.create({
+        assistant_id: assistantId,
+      });
+  
+      // Set the threadId in state and send it in the response
+      state.threadId = response.id;
+      state.messages = []; // Reset messages
+      res.json({ threadId: state.threadId });
+    } catch (error) {
+      console.error('Error creating thread:', error);
+      res.status(500).json({ error: 'Failed to create thread' });
     }
+  });
 
-    const data = await response.json();
-    state.threadId = data.id;
-    state.messages = []; // Reset messages
-    res.json({ threadId: state.threadId });
-  } catch (error) {
-    console.error('Error creating thread:', error);
-    res.status(500).json({ error: 'Failed to create thread' });
-  }
-});
 
 // Route to send a message and run the Assistant
 app.post('/api/run', async (req, res) => {
   const { message } = req.body;
   state.messages.push({ role: 'user', content: message });
-  try {
-    await openai.beta.threads.messages.create(thread_id,
-        {
-            role: "user",
-            content: message,
-        })
-    // run and poll thread V2 API feature
-    let run = await openai.beta.threads.runs.createAndPoll(thread_id, {
-        assistant_id: state.assistant_id
-    })
-    let run_id = run.id;
-    state.run_id = run_id;
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Error running assistant:', errorText);
-      return res.status(response.status).json({ error: 'Failed to run assistant' });
+  try {
+    // Send message to assistant in the thread
+    await openai.beta.threads.messages.create(state.threadId, {
+      role: "user",
+      content: message,
+    });
+
+    // Run and poll the thread
+    const run = await openai.beta.threads.runs.createAndPoll(state.threadId, {
+      assistant_id: state.assistant_id,
+    });
+
+    // Check if run is successful
+    if (!run || !run.status || run.status !== "completed") {
+      console.error('Error: Assistant run did not complete successfully');
+      return res.status(500).json({ error: 'Failed to run assistant' });
     }
-    let messages = await openai.beta.threads.messages.list(thread_id);
-    let all_messages = [];
-    let role = "";
-    let content = "";
-   
+
+    // Get messages from the thread and find the assistant's latest response
+    const messages = await openai.beta.threads.messages.list(state.threadId);
+    const assistantMessage = messages.data.find(msg => msg.role === 'assistant');
+
+    // Add the assistant's message to the state
     if (assistantMessage) {
-      state.messages.push(assistantMessage);
+      state.messages.push({ role: 'assistant', content: assistantMessage.content });
     }
+
     res.json({ messages: state.messages });
   } catch (error) {
     console.error('Error running assistant:', error);
     res.status(500).json({ error: 'Failed to run assistant' });
   }
 });
+
 
 // Start the server
 app.listen(PORT, () => {

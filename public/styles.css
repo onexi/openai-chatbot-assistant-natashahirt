@@ -1,0 +1,146 @@
+/* Body Background */
+body {
+  background-color: #f8f9fa;
+  font-family: Arial, sans-serif;
+}
+
+/* Chat Container */
+.chat-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+.chat-container h1 {
+  font-family: Arial, sans-serif;
+  color: #5f72e4;
+}
+
+/* Message Container */
+.message-container {
+  height: 300px;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid #dee2e6;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Message Styles */
+.message {
+  padding: 10px 15px;
+  border-radius: 20px;
+  max-width: 60%;
+  word-wrap: break-word;
+  position: relative;
+}
+
+.message.user {
+  background-color: #d1e7dd;
+  color: #155724;
+  align-self: flex-end;
+  border-top-right-radius: 0;
+  margin-left: auto;
+}
+
+.message.system {
+  color: #6c757d; /* Grey text color */
+  font-style: italic;
+  margin: 3px 0; /* Smaller spacing between system messages */
+  padding: 2px 5px; /* Minimal padding to keep it inline */
+  text-align: left;
+  font-size: 0.9em; /* Slightly smaller font size for system messages */
+}
+
+/* System Message Styles (no bubbles, grey text) */
+.message.system {
+  color: #6c757d; /* Grey text color */
+  font-style: italic;
+  margin: 5px 0;
+  text-align: left;
+}
+
+/* Add a pointer triangle for Assistant */
+.message.assistant::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border-right: 10px solid #d1d1f2;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+
+/* Add a pointer triangle for User */
+.message.user::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -10px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid #d1e7dd;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+
+/* Button Styles */
+button {
+  font-weight: bold;
+}
+
+#newThreadBtn {
+  background-color: #f8d7da;
+  border: none;
+  color: #d63384;
+}
+
+#sendBtn {
+  background-color: #c3e6cb;
+  color: #28a745;
+  border: none;
+  font-size: 18px;
+}
+
+#sendBtn i {
+  font-size: 16px;
+}
+
+#sendBtn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Assistant and Input Section */
+.form-control,
+.input-group > .btn {
+  border-radius: 12px;
+}
+
+.input-group {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#assistant_name {
+  border-color: #d1e7dd;
+  display: none;
+}
+
+#assistantDisplay {
+  color: #6c757d; /* Grey text color */
+  font-style: italic;
+  margin: 5px 0;
+  text-align: left;
+}
+
+/* Spinner */
+#spinner {
+  color: #6c757d;
+  margin-right: 4px;
+}
