@@ -17,6 +17,7 @@ body {
 .chat-container h1 {
   font-family: Arial, sans-serif;
   color: #5f72e4;
+  font-weight: bold; 
 }
 
 /* Message Container */
