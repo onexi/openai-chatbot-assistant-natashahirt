@@ -17,14 +17,10 @@
     <div class="container my-5 p-4 rounded shadow chat-container">
       <h1 class="text-center text-primary mb-4">BankBot Chat</h1>
   
-      <!-- Assistant Selection -->
+      <!-- Assistant Selection Dropdown -->
       <div class="mb-3 d-flex align-items-center gap-2">
         <label for="assistantSelect" class="form-label mb-0 text-muted">Select Assistant:</label>
-        <span id="assistantDisplay">asst_mKubPnoRJxz3sL90FRE9NEZH</span>
-        <input id="assistant_name" type="text" class="form-control form-control-sm" style="max-width: 250px;" value="asst_mKubPnoRJxz3sL90FRE9NEZH" />
-        <button id="get_assistant" class="btn btn-primary btn-sm rounded-pill" onclick="toggleAssistantInput()">
-          Change Assistant
-        </button>
+        <select id="assistantSelect" class="form-select form-select-sm" style="max-width: 250px;"></select>
       </div>
   
       <!-- Message Display -->
@@ -42,7 +38,7 @@
 
     <!-- Create New Thread Button -->
     <div class="mb-3 text-center">
-      <button id="newThreadBtn" class="btn btn-info rounded-pill" onclick="getThread()">Create New Thread</button>
+      <button id="newThreadBtn" class="btn btn-info rounded-pill" onclick="handleNewThread()">Create New Thread</button>
     </div>
   
     <script type="module" src="/js/main.js"></script>

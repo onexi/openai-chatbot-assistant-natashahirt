@@ -1,18 +1,21 @@
 // api.js
 
 import { state } from './state.js';
-import { writeToMessages, displayLastMessage, airplaneIconHTML } from './ui.js';
+import { writeToMessages, displayLastMessage, airplaneIconHTML, clearMessages } from './ui.js';
 
 export async function getAssistant() {
-    let name = document.getElementById('assistant_name').value;
-    console.log(`assistant_id: ${name}`);
+    const assistantSelect = document.getElementById('assistantSelect');
+    const assistant_id = assistantSelect.value; // Get the selected assistant ID
+
+    console.log(`assistant_id: ${assistant_id}`);
+
     try {
       const response = await fetch('/api/assistants', {
-        method: 'POST',
+        method: 'POST', 
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name: name }),
+        body: JSON.stringify({ name: assistant_id }),
       });
       Object.assign(state, await response.json()); // Update properties without reassigning
       writeToMessages(`Assistant ${state.assistant_name} is ready to chat.`,"system");

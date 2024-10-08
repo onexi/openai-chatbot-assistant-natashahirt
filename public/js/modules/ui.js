@@ -53,47 +53,49 @@ export function displayLastMessage(state) {
   }
 }
 
-function clearMessages() {
+export function clearMessages() {
   const messageContainer = document.getElementById("message-container");
   messageContainer.innerHTML = ""; // Clear all existing messages
 }
 
-// Toggle between showing the text and input field
+// Fetches the selected assistant and handles the toggle
 export async function toggleAssistantInput() {
-    const assistantDisplay = document.getElementById("assistantDisplay");
-    const assistantInput = document.getElementById("assistant_name");
-    const getAssistantBtn = document.getElementById("get_assistant");
-  
-    if (getAssistantBtn.textContent === "Change Assistant") {
-      // Switch to input mode
-      assistantInput.style.display = "inline-block";
-      assistantDisplay.style.display = "none";
-      assistantInput.value = assistantDisplay.textContent; // Set input value to current assistant ID
-      assistantInput.focus();
-      getAssistantBtn.textContent = "Save";
-    } else {
-      // Save the assistant ID and switch to display mode
-      
-      try {
-        // Clear messages and create a new thread
-        clearMessages();
-        await getThread();
+  const assistantInput = document.getElementById("assistantSelect");
 
-        state.assistant_id = assistantInput.value; 
-        // Fetch the new assistant's data
-        await getAssistant(); // Fetch the assistant based on the updated input
+  // Set an event listener for the dropdown change
+  assistantInput.addEventListener('change', async () => {
+      await handleAssistantChange(); // Immediately handle the assistant change when the dropdown value changes
+  });
+}
 
-        // Set the display text to the selected assistant name
-        assistantDisplay.textContent = assistantInput.value; // Set to the selected assistant's name
-        assistantDisplay.style.display = "inline";
-        assistantInput.style.display = "none";
-        getAssistantBtn.textContent = "Change Assistant";
+// Function to handle the assistant change logic
+async function handleAssistantChange() {
+  const assistantInput = document.getElementById("assistantSelect");
 
-      } catch (error) {
-          console.error("Error toggling assistant input:", error);
-      }
+  // Disable the dropdown while processing
+  assistantInput.disabled = true;
 
-    }
+  try {
+      // Clear previous messages
+      clearMessages();
+
+      // Fetch the selected assistant ID from the dropdown
+      const selectedAssistantId = assistantInput.value;
+
+      // Update state with the new assistant ID
+      state.assistant_id = selectedAssistantId;
+
+      // Fetch the new assistant's data
+      await getAssistant(); // Fetch the assistant based on the updated input
+
+      // Start a new thread with the selected assistant
+      await getThread();
+  } catch (error) {
+      console.error('Error changing assistant:', error);
+  } finally {
+      // Re-enable the dropdown after processing
+      assistantInput.disabled = false;
+  }
 }
 
 export function initializeUI() {
@@ -101,5 +103,40 @@ export function initializeUI() {
     if (getAssistantBtn) {
         getAssistantBtn.onclick = toggleAssistantInput;
     }
+
+    const newThreadBtn = document.getElementById("newThreadBtn");
+    newThreadBtn.onclick = handleNewThread; // Attach the function to the button click
 }
 
+// Function to populate the assistant dropdown
+export function populateAssistantDropdown(assistantMap) {
+  const assistantSelect = document.getElementById('assistantSelect');
+  
+  // Clear existing options
+  assistantSelect.innerHTML = '';
+
+  // Loop through the assistantMap and create options
+  for (const [name, id] of Object.entries(assistantMap)) {
+      const option = document.createElement('option');
+      option.value = id; // Set the value to the assistant ID
+      option.textContent = name; // Set the display text to the assistant name
+      assistantSelect.appendChild(option); // Append the option to the dropdown
+  }
+}
+
+// Function to set up the assistant selection event
+export function initializeAssistantSelection() {
+  const assistantInput = document.getElementById("assistantSelect");
+
+  // Set an event listener for the dropdown change
+  assistantInput.addEventListener('change', async () => {
+      await handleAssistantChange(); // Handle the assistant change when the dropdown value changes
+  });
+}
+
+function handleNewThread() {
+  // Clear messages before starting a new thread
+  clearMessages();
+  // Call the function to create a new thread
+  getThread();
+}
