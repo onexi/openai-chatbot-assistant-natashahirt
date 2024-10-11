@@ -8,7 +8,7 @@ import { airplaneIconHTML, initializeUI, populateAssistantDropdown, initializeAs
 window.getThread = getThread;
 
 const assistantMap = {
-  "BankTest": "asst_mKubPnoRJxz3sL90FRE9NEZH",
+  "BankTest": "asst_hBTqaeCRW8LwY5iG2r8GBEVu",
   "Course TA": "asst_l94g43kQzS4ubStOC3F2tqpY",
   "TestAgent": "asst_ou57mAE4347tiKDTyXh2IzWL"
 };
